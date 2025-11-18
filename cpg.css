@@ -190,7 +190,7 @@ line-height: 1.5;
 
 /*CONTACT SECTION*/
 .contact-section{
-    padding: 90px 30px;
+    padding: 90px 0px;
     background-color: #fff;
     text-align: center;
     color: #000000
@@ -239,6 +239,36 @@ line-height: 1.5;
 .contact-form button:hover{
     color:rgb(5, 145, 145);
 }
+
+/*MESSAGE SECTION*/
+.message-section{
+    background-color : rgb(114, 116, 114);
+    text-align: center;
+    color: rgb(18, 20, 20);
+    padding: 40px 30px;}
+
+    .message-section h2{
+        font-size: 50px;
+        padding: 20px 10px;
+        margin-bottom: 30px;}  
+        
+    .messages-container{
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+        color: rgb(5, 15, 15);
+    }
+    .message{
+        background-color: rgb(220, 228, 235);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+
+
+
+
 
 /*FOOTER SECTION*/
 .footer-section{

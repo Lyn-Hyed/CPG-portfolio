@@ -16,7 +16,7 @@
   <body>
     <!--  NAVBAR -->
     <nav class="navbar">
-      <div class="M-LOGO">LOGO</div>
+      <div class="M-LOGO">LM</div>
 
       <ul class="nav2">
         <li>
@@ -30,6 +30,9 @@
         </li>
         <li>
           <a href="#contact">CONTACT</a>
+        </li>
+        <li>
+          <a href="#messages">MESSAGES</a>
         </li>
       </ul>
     </nav>
@@ -100,24 +103,32 @@
         with like-minded people
       </p>
 
-      <form class="contact-form">
-        <input type="text" placeholder="Enter your name" required />
-        <input type="email" placeholder="Enter your email" required />
+      <form class="contact-form" id="contactForm">
+        <input type="text" id="name" placeholder="Enter your name" required />
+        <input type="email" id="email" placeholder="Enter your email" required />
 
         <textarea
           placeholder="type your message here....."
           required
           rows="5"
           cols="60"
+          id="message"  
         ></textarea>
 
         <button type="submit">send message</button>
       </form>
-
-
     </section>
-  </body>
-  
+
+
+          <!-- MESSAGES SECTION -->
+    <section class="message-section" id="messages">
+        <h2>Message Received</h2>
+        <div id="messagesContainer" class="messages-container">
+            <p>Loading messages...</p>
+        </div>
+    </section>
+
+
 <!--FOOTER SECTION-->
               <footer class="footer-section">
           <div class="socials">
@@ -127,4 +138,91 @@
           </div>
            <p>© 2025 Lyn Mathew | All Rights Reserved</p>
         </footer>
+
+
+
+     <!-- JS -->
+    <script>
+        const form = document.getElementById("contactForm");
+
+        // -------------------------------
+        // SEND MESSAGE TO BACKEND
+        // -------------------------------
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const message = document.getElementById("message").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/contact", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, message })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Your message has been sent successfully 🎉");
+                    form.reset();
+                    loadMessages(); // refresh list
+                } else {
+                    alert("Failed to send message: " + data.error);
+                }
+            } catch (error) {
+                alert("Error connecting to the backend. Is the server running?");
+                console.error(error);
+            }
+        });
+
+        // -------------------------------
+        // GET MESSAGES FROM BACKEND
+        // -------------------------------
+        async function loadMessages() {
+            const container = document.getElementById("messagesContainer");
+            container.innerHTML = "Loading messages...";
+
+            try {
+                const response = await fetch("http://localhost:3000/contacts");
+                const messages = await response.json();
+
+                if (messages.length === 0) {
+                    container.innerHTML = "<p>No messages yet.</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+
+                messages.forEach(msg => {
+                    const time = new Date(msg.receivedAt._seconds * 1000).toLocaleString();
+
+                    const card = document.createElement("div");
+                    card.className = "message-card";
+                    card.innerHTML = `
+                        <h3>${msg.name}</h3>
+                        <p><strong>Email:</strong> ${msg.email}</p>
+                        <p>${msg.message}</p>
+                        <span class="timestamp">${time}</span>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                container.innerHTML = "<p>Failed to load messages.</p>";
+                console.error(error);
+            }
+        }
+
+        // Load messages automatically when page opens
+        loadMessages();
+    </script>
+
+  
+
+
+
+  </body>
+  
 </html>
